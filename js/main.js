@@ -18,45 +18,100 @@ let producto = [{"id":1,"title":"Fjallraven - Foldsack No. 1 Backpack, Fits 15 L
             ////.then( (prod)=> console.log(prod)  )  //resolve
  //           .catch((err)=>console.log(err.message)); //reject
 //Arriba termina el codigo visto en clase
- const cardsContainer = document.getElementById("cartas"); //para las cartas
+ //const cardsContainer = document.getElementById("cartas"); //para las cartas
  // se hace un forEach porque con un for o while normal no se puede.
- producto.forEach(producto => {
-   const card = document.createElement("div");
-   card.classList.add("card");
-   const image = document.createElement("img");
-   image.src = producto.image;
-   image.alt = producto.title;
-   const title = document.createElement("h2");
-   title.textContent = producto.title;
-   const category = document.createElement("h4")
-   category.textContent = producto.category;
-   const price = document.createElement("p");
-   price.textContent = `$${producto.price}`;
-   const description = document.createElement("p");
-   description.textContent = producto.description;
+// producto.forEach(producto => {
+  // const card = document.createElement("div");
+   //card.classList.add("card");
+   //const image = document.createElement("img");
+   //image.src = producto.image;
+   //image.alt = producto.title;
+   //const title = document.createElement("h2");
+   //title.textContent = producto.title;
+   //const category = document.createElement("h4")
+   //category.textContent = producto.category;
+   //const price = document.createElement("p");
+   //price.textContent = `$${producto.price}`;
+   //const description = document.createElement("p");
+   //description.textContent = producto.description;
  ///Cada carta con cada elemento para hacerlo más facil
-   card.appendChild(image);
-   card.appendChild(title);
-   card.appendChild(price);
-   card.appendChild(description);
-   card.appendChild(category);
+  // card.appendChild(image);
+   //card.appendChild(title);
+   //card.appendChild(price);
+   //card.appendChild(description);
+   //card.appendChild(category);
  
-   cardsContainer.appendChild(card);
+   //cardsContainer.appendChild(card);
    
- });
+ //});
  
 
- const getProducto = () => {
+ //const getProducto = () => {
  //regresame el producto
-     return new Promise((resolve, reject) => {
-         if (producto == null) {
-             reject(new Error("Producto no existe"))
-         }
-         setTimeout(() => { resolve (producto) }, 2000);
-     });
- };
+   //  return new Promise((resolve, reject) => {
+     //    if (producto == null) {
+       //      reject(new Error("Producto no existe"))
+         //}
+         //setTimeout(() => { resolve (producto) }, 2000);
+    // });
+ //};
  //falta terminar
- getProducto()
-     .then((prod)=> console.log(pro))
-     .catch((err)=> console.log(err.message));
  
+ //getProducto()
+   //  .then((prod)=> console.log(prod))
+     //.catch((err)=> console.log(err.message));
+function getProducto(){ // con fech
+  let promesa = fetch("https://fakestoreapi.com/products",{
+    method: "GET"
+  });
+  promesa.then( (respuesta)=> {
+    respuesta.json().then( (prods) => {
+      //crear cards (prods);
+      console.log("prods=>json()");
+      console.log(prods);
+    } // prods
+    )// then json
+    .catch ((err)=>{
+      console.error("Error en el formato de la respuesta " + err.message);
+    }); //catch del json
+  }// respuesta
+  )//then
+  .catch((error)=>{
+    console.error("Error en la respuesta " + error.message);
+  }); //catch promesa
+}//GET PRODUCTO
+getProducto();
+           // .then((prod)=> console.log(prod)) //resolve
+            //.catch((err)=> console.log (err.message)); //reject
+let mainProds = document.getElementById("mainProds");
+function createCards(prods){
+  prods.forEach(prod =>{
+    mainProds.insertAdjacentHTML("beforeend",
+    `<!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      Launch demo modal
+    </button>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal_${prod.id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">${prod.title}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            ${prod.description}
+            <p class="card-text"><strong>${prod.category}<strong></p>
+            <p class="card-text">${prod.description.slice(0,20)}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal_${prod.id}">Cerrar</button>
+            <button type="button" class="btn btn-primary">Más información</button>
+          </div>
+        </div>
+      </div>
+    </div>`
+    )
+  })
+}
